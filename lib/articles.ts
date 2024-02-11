@@ -43,15 +43,37 @@ const getSortedArticles = (): ArticleItem[] => {
 }
 
 export const getCategorisedArticles = (): Record<string, ArticleItem[]> => {
-    const sortedArticles = getSortedArticles()
-    const categorisedArticles: Record<string, ArticleItem[]> = {}
+  const sortedArticles = getSortedArticles()
+  const categorisedArticles: Record<string, ArticleItem[]> = {}
 
-    sortedArticles.forEach((article) => {
-        if (!categorisedArticles[article.category]) {
-            categorisedArticles[article.category] = []
-        }
-        categorisedArticles[article.category].push(article)
-    })
+  sortedArticles.forEach((article) => {
+    if (!categorisedArticles[article.category]) {
+      categorisedArticles[article.category] = []
+    }
+    categorisedArticles[article.category].push(article)
+  })
 
-    return categorisedArticles
+  return categorisedArticles
+}
+
+export const getArticlesData = async (id: string) => {
+  const fulPath = path.join(articlesDirectory, `${id}.md`)
+
+  const fileContents = fs.readFileSync(fulPath, 'utf-8')
+
+  const matterResult = matter(fileContents)
+
+  const processedContent = await remark()
+    .use(html)
+    .process(matterResult.content)
+
+  const contentHtml = processedContent.toString()
+
+  return {
+    id,
+    contentHtml,
+    title: matterResult.data.title,
+    date: matterResult.data.date,
+    category: matterResult.data.category,
+  }
 }
