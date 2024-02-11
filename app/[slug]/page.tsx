@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { ArrowLeftIcon } from '@heroicons/react/24/solid'
 import { getArticlesData } from '@/lib/articles'
 
-
 const Article = async ({ params }: { params: { slug: string } }) => {
   const articleData = await getArticlesData(params.slug)
 
@@ -16,6 +15,7 @@ const Article = async ({ params }: { params: { slug: string } }) => {
         <p>{articleData.date.toString()}</p>
       </div>
       <article
+        className="article"
         dangerouslySetInnerHTML={{ __html: articleData.contentHtml }}
       />
     </section>
